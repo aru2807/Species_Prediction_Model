@@ -1,0 +1,51 @@
+import pandas as pd
+
+from google.colab import files
+uploaded = files.upload()
+
+import io
+
+df = pd.read_csv(io.BytesIO(uploaded['Iris.csv']))
+
+inputs = df.drop('Species',axis='columns')
+target = df['Species']
+
+inputs_n = inputs.drop(['Id'],axis='columns')
+inputs_n.head()
+
+from sklearn import tree
+
+model = tree.DecisionTreeClassifier()
+
+model.fit(inputs_n,target)
+
+model.score(inputs_n,target)
+
+model.predict([[4.9,3.0,1.4,0.2]])
+
+from sklearn.tree import DecisionTreeClassifier
+import sklearn.datasets as datasets
+from sklearn.externals.six import StringIO
+from sklearn.tree import export_graphviz
+import pydotplus
+from IPython.display import Image
+
+iris = datasets.load_iris()
+x = iris.data
+y = iris.target
+
+iris.feature_names
+iris.target_names #class vales
+
+clf = DecisionTreeClassifier(random_state=0)
+
+model = clf.fit(x,y)
+
+dot_data = tree.export_graphviz(model, out_file=None, feature_names=iris.feature_names,class_names=iris.target_names)
+
+graph = pydotplus.graph_from_dot_data(dot_data)
+
+Image(graph.create_png())
+
+graph.write_pdf("Iris.pdf")
+graph.write_png("Iris.png")
